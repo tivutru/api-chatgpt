@@ -1,16 +1,17 @@
 import express from "express";
-import { askGPT } from "../lib/gpt/gpt.js";
+import dotenv from "dotenv";
+import gptRoute from "./routes/gpt.js";
 
-const router = express.Router();
+dotenv.config(); // Load biến môi trường từ .env
 
-router.get("/", async (req, res) => {
-  const text = req.query.text;
-  if (!text) {
-    return res.status(400).json({ success: false, message: "Missing 'text' query." });
-  }
+const app = express();
+const port = 8899;
 
-  const reply = await askGPT(text);
-  res.json({ success: true, reply });
+// Middleware để parse JSON nếu bạn muốn nhận dữ liệu dạng JSON (tùy API bạn thiết kế)
+app.use(express.json());
+
+app.use("/", gptRoute);
+
+app.listen(port, () => {
+  console.log(`✅ Server is running at http://localhost:${port}`);
 });
-
-export default router;
