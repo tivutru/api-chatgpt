@@ -1,28 +1,17 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors";
-import rateLimit from "express-rate-limit";
-import gptRouter from "./routes/gpt.js";
+import gptRoute from "./routes/gpt.js";
 
-dotenv.config();
+dotenv.config(); // Load biến môi trường từ .env
+
 const app = express();
+const port = 8899;
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-});
-
-app.use(cors());
-app.use(limiter);
+// Middleware để parse JSON nếu bạn muốn nhận dữ liệu dạng JSON (tùy API bạn thiết kế)
 app.use(express.json());
 
-app.use("/gpt", gptRouter);
+app.use("/", gptRoute);
 
-app.get("/", (req, res) => {
-  res.send("GPT API is running.");
-});
-
-const PORT = process.env.port || 8899;
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+app.listen(port, () => {
+  console.log(`✅ Server is running at http://localhost:${port}`);
 });
